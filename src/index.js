@@ -5,17 +5,33 @@ import Login from './components/Login.js';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import Homebar from './components/Homebar';
 import ListCafe from './components/ListCafe';
 
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Breadcrumb } from 'react-bootstrap';
+
+import { IntlProvider } from 'react-intl';
+import localEsMessages from './translations/es.json';
+import enJson from './translations/en.json';
+import esJson from './translations/es.json';
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const web_len = navigator.language;
+const messages = {
+  'en': enJson,
+  'es': esJson
+}
 root.render(
-  <React.StrictMode>
-    <Homebar />
-    <Login />
-    <ListCafe />
-  </React.StrictMode>
+  <IntlProvider locale={web_len} messages={messages}>
+    <BrowserRouter>
+      <Homebar />
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/listCafe" element={<ListCafe />} />
+      </Routes>
+    </BrowserRouter>
+  </IntlProvider>, document.getElementById('root')  
 );
 
 // If you want your app to work offline and load faster, you can change

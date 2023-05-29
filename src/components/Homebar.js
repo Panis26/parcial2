@@ -4,7 +4,7 @@ function Homebar(){
     return(
         <div>
             <div className="homebar-tittle">
-                <h1>Homebar</h1>
+                <h1>El aroma mágico</h1>
              </div>
             <div className="homebar-img">
                 <img src={imgHomebar} alt="homebar"/>

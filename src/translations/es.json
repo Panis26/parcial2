@@ -1,0 +1,10 @@
+{
+    "Name": "Nombre",
+    "Type": "Tipo",
+    "Region": "Región",
+    "Login": "Iniciar sesión",
+    "Password": "Contraseña",
+    "Forgot-password": "¿Olvidaste tu contraseña?",
+    "Join": "Ingresar",
+    "Cancel": "Cancelar"
+}

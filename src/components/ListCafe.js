@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react"
+import { FormattedDate, IntlProvider } from "react-intl"
+import { FormattedMessage } from "react-intl"
 
 function ListCafe() {
     const [cafes, setCafes] = useState([]);
     const [selectedCafe, setSelectedCafe] = useState(null);
     const baseUrl = "http://localhost:3001";
 
-    // Obtener la lista de cafe
     useEffect(() => {
         fetch(`${baseUrl}/cafes`)
             .then(response => response.json())
@@ -17,14 +18,17 @@ function ListCafe() {
             });
     }, []);
 
-    // Obtener los detalles de un cafe seleccionado
     useEffect(() => {
-        if (selectedCafe) {
+        if (selectedCafe !== null) {
             fetch(`${baseUrl}/cafes/${selectedCafe}`)
                 .then(response => response.json())
                 .then(data => {
-                    // Actualizar los detalles del cafe
-                    console.log(data);
+                    // Actualizar los detalles del café
+                    setCafes(prevCafes => {
+                        const updatedCafes = [...prevCafes];
+                        updatedCafes[selectedCafe - 1] = data;
+                        return updatedCafes;
+                    });
                 })
                 .catch(error => {
                     console.error(error);
@@ -40,14 +44,20 @@ function ListCafe() {
     return (
         <div className="row">
             <div className="col-md-8">
-                <div className="row">
+                <div className="row justify-content-end" >
                     <table className="table">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Nombre</th>
-                                <th scope="col">Tipo</th>
-                                <th scope="col">Región</th>
+                                <th scope="col">
+                                    <FormattedMessage id="Name" />
+                                    </th>
+                                <th scope="col">
+                                    <FormattedMessage id="Type" />
+                                </th>
+                                <th scope="col">
+                                    <FormattedMessage id="Region" />
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,20 +73,38 @@ function ListCafe() {
                     </table>
                 </div>
             </div>
-            <div className="card">
-                <div className="card-body">
-                    <h5 className="card-title">{cafes[selectedCafe - 1].nombre}</h5>
-                    <p className="card-text"> {cafes[selectedCafe - 1].fecha_cultivo}</p>
-                    <img src={cafes[selectedCafe - 1].imagen} className="card-img-top" alt="Imagen del cafe" />
-                    <p className="card-text">
-                        Notas
-                        {cafes[selectedCafe - 1].region}
-                    </p>
-                    <p className="card-text">{cafes[selectedCafe - 1].altura} msnm</p>
+            <div className="col-md-4">
+                <div className="card h-100 rounded" style={{ maxWidth: '300px' }}>
+                    <div className="card-body text-center">
+                        {selectedCafe !== null && (
+                            <>
+                                <h5 className="card-title">{cafes[selectedCafe - 1].nombre}</h5>
+                                <p className="card-text">
+                                    <FormattedDate
+                                        value={new Date(cafes[selectedCafe - 1].fecha_cultivo)}
+                                        year="numeric"
+                                        month="long"
+                                        day="numeric"
+                                        weekday="long"
+                                    />
+                                </p>  
+                                <img
+                                    src={cafes[selectedCafe - 1].imagen}
+                                    className="card-img-top img-fluid"
+                                    alt="Imagen del café"
+                                    style={{ maxWidth: '100%' }}
+                                />
+                                <p className="card-text">
+                                    Notas:
+                                    {cafes[selectedCafe - 1].notas}
+                                </p>
+                                <p className="card-text">{cafes[selectedCafe - 1].altura} msnm</p>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
-
     )
 }
 

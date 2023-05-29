@@ -1,30 +1,33 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const baseUrl = 'http://localhost:3001';
+  const navigate = useNavigate(); // Agregar esta línea para obtener la función de navegación
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Realizar la petición al backend
-    fetch('/login', {
+    fetch(`${baseUrl}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ "login": username, "password": password }),
     })
       .then(response => response.json())
       .then(data => {
-        // Manejar la respuesta del backend
-        console.log(data);
-      })
-      .catch(error => {
-        // Manejar errores de la petición
-        <div className="alert alert-danger" role="alert">
-          {error.message}
-        </div>
+        if (data.status === 'error') {
+          setError(data.message);
+        } else {
+          localStorage.setItem('token', data.token);
+          navigate('/listCafe');
+        }
       });
   };
 
@@ -34,10 +37,14 @@ function Login() {
         <div className="card" style={{ width: '75%' }}>
           <div className="row no-gutters">
             <div className="card-body" style={{backgroundColor: '#ffdfd0'}}>
-              <h5 className="card-title">Iniciar sesión</h5>
+              <h5 className="card-title">
+                <FormattedMessage id="Login" />
+                </h5>
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label htmlFor="username">Nombre de usuario</label>
+                  <label htmlFor="username">
+                    <FormattedMessage id="Name" />
+                    </label>
                   <input
                     type="text"
                     className="form-control"
@@ -47,7 +54,9 @@ function Login() {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="password">Contraseña</label>
+                  <label htmlFor="password">
+                    <FormattedMessage id="Password" />
+                    </label>
                   <input
                     type="password"
                     className="form-control"
@@ -57,13 +66,20 @@ function Login() {
                   />
                 </div>
                 <div className="form-group form-check">
-                  <a href="#" className="ml-auto">Forgot Password?</a>
+                  <a href="#" className="ml-auto">
+                    <FormattedMessage id="Forgot-password" />
+                    </a>
                 </div>
                 <div className="text-center mb-4">
-                  <button type="submit" className="btn btn-block" style={{backgroundColor: '#BDECB6'}}>Ingresar</button>
-                  <button type="submit" className="btn btn-block" style={{backgroundColor: '#ff7c70'}}>Cancelar</button>
+                  <button type="submit" className="btn btn-block" style={{backgroundColor: '#BDECB6'}}>
+                    <FormattedMessage id="Join" />
+                    </button>
+                  <button type="submit" className="btn btn-block" style={{backgroundColor: '#ff7c70'}}>
+                    <FormattedMessage id="Cancel" />
+                    </button>
                 </div>
               </form>
+              <p className="text-danger">{error}</p>
             </div>
           </div>
         </div>
